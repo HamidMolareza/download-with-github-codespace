@@ -52,20 +52,20 @@ shift 1 # skip the path argument to get options
 
 if [ $folder -eq 0 ]; then
     # Upload File
-    aws --endpoint-url "https://$domain" s3 cp "$path" "s3://$bucket_name/$bucket_path" "$@"
+    aws --endpoint-url "https://$domain" s3 cp "$path" "s3://$bucket_name/$bucket_path/" "$@"
 else
     # Upload folder
-    aws --endpoint-url "https://$domain" s3 cp --recursive "$path" "s3://$bucket_name/$bucket_path" "$@"
+    aws --endpoint-url "https://$domain" s3 cp --recursive "$path" "s3://$bucket_name/$bucket_path/" "$@"
 fi
 
 if [ "$?" -eq 0 ]; then
     echo "File(s) uploaded successfully."
     if [ $folder -eq 0 ]; then
-        echo "Download URL: https://$bucket_name.$domain/$(basename "$path")"
+        echo "Download URL: https://$bucket_name.$domain/$bucket_path/$(basename "$path")"
     fi
 
     echo ""
-    aws --endpoint-url "https://$domain" s3 ls s3://$bucket_name/
+    aws --endpoint-url "https://$domain" s3 ls s3://$bucket_name/$bucket_path/
 else
     echo "Error: Failed to upload file."
     exit 1
