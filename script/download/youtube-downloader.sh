@@ -23,4 +23,4 @@ yt-dlp -F "$youtube_link"
 read -rp "Enter the video ID you want to download: " video_id
 
 # Download the video using yt-dlp
-yt-dlp -f $video_id "$youtube_link"
+yt-dlp -f "$video_id" "$youtube_link"
