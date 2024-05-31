@@ -37,7 +37,11 @@ echo "Supported formats for downloading:"
 yt-dlp -F "$youtube_link"
 
 # Prompt user to enter the video ID
-read -p "Enter the video ID you want to download: " video_id
+read -p "Enter the video ID you want to download (Default is best format): " video_id
 
 # Download the video using yt-dlp
-yt-dlp -f $video_id "$youtube_link"
+if [ -z "$video_id" ]; then
+    yt-dlp -f best "$youtube_link"
+else
+    yt-dlp -f $video_id "$youtube_link"
+fi
