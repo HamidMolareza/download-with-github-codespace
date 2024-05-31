@@ -25,6 +25,10 @@ if ! command_exists yt-dlp; then
     install_yt_dlp
 fi
 
+if ! command_exists ffmpeg; then
+    sudo apt install -y ffmpeg
+fi
+
 # Get the YouTube link from command-line argument
 youtube_link="$1"
 
