@@ -27,7 +27,15 @@ def download_videos(file_path):
             print(f"Downloading {url}")
             try:
                 # Execute yt-dlp command to download the video in the best quality
-                subprocess.run(["yt-dlp", "-f", "best", url], check=True)
+                subprocess.run(
+                    [
+                        "yt-dlp",
+                        "-f",
+                        "bv+ba/b",
+                        url,
+                    ],
+                    check=True,
+                )
             except subprocess.CalledProcessError as e:
                 print(f"An error occurred while downloading {url}: {e}")
 
