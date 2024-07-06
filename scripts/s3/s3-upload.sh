@@ -1,9 +1,9 @@
 #!/bin/bash
 
-# Constants
+# Constants - Change these
 domain="s3.ir-thr-at1.arvanstorage.ir"
-bucket_name="test-github"
-bucket_path="test"
+bucket_name="bucket-aws"
+bucket_path="files"
 
 # Functions
 check_path() {
