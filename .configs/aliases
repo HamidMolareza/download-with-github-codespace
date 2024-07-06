@@ -1,0 +1,15 @@
+#!/bin/bash
+
+alias ll="ls -alFh"
+alias c="clear"
+alias ..='cd ..'
+alias ....='cd ../..'
+
+
+alias c='clear'
+alias ll='clear'
+
+alias bash-reload='source ~/.bashrc' 
+
+alias pwdc='pwd | clipboard'
+alias pwdce='pwd | clipboard && exit'
