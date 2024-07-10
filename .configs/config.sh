@@ -16,3 +16,6 @@ printf "%s\n" ". $PWD/.configs/aliases" >> ~/.bashrc
 source "$HOME/.bashrc"
 
 pip install -r "$PWD/scripts/youtube/requirements.txt"
+
+sudo apt update
+sudo apt install ffmpeg
