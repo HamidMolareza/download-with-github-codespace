@@ -13,3 +13,7 @@ alias bash-reload='source ~/.bashrc'
 
 alias pwdc='pwd | clipboard'
 alias pwdce='pwd | clipboard && exit'
+
+alias youtube-download="c; youtube-downloader.py $1 && c && echo "Youtube videos downloaded at $(date "+%H:%M:%S")""
+alias zip-files="c; zip -r ../$(date "+%H%M%S-%Y%m%d").zip $1* && rm $1* && c && echo "Zip completed at $(date "+%H:%M:%S")""
+alias upload="c; s3-upload.sh $1 && rm $1 && c && echo "Upload completed at $(date "+%H:%M:%S")""
