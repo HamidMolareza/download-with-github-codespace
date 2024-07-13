@@ -14,7 +14,7 @@ clear
 echo "Size: $(du -sh "$folder_name")"
 
 zip -r "$output_filename" "$folder_name"/*
-find "$folder_name" -not -name 'list.txt' -not -name '.' -exec rm -rf {} +
+find "$folder_name" -not -name "$folder_name" -not -name 'list.txt' -not -name '.' -exec rm -rf {} +
 
 clear
 
