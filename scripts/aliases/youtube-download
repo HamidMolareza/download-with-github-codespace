@@ -1,0 +1,11 @@
+#!/bin/bash
+set -e
+
+list="$1"
+
+clear
+
+youtube-downloader.py "$list"
+
+clear
+echo "Youtube videos downloaded at $(date "+%H:%M:%S")"

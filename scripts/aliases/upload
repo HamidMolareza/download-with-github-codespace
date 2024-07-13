@@ -1,0 +1,15 @@
+#!/bin/bash
+set -e
+
+file="$1"
+if [ ! -f "$file" ]; then
+    echo "The input '$file' is not valid. Please enter a valid folder name."
+fi
+
+clear
+
+s3-upload.sh "$file"
+rm "$file"
+
+clear
+echo "Upload completed at $(date "+%H:%M:%S")"
