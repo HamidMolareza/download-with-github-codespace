@@ -1,26 +1,20 @@
 #!/bin/bash
 set -e
 
-path="$1"
+folder_name="$1"
+if [ ! -d "$folder_name" ]; then
+    echo "PLease enter a valid folder name."
+    exit 1
+fi
 
 current_datetime=$(date "+%H%M%S-%Y%m%d")
 output_filename="$current_datetime.zip"
 
 clear
 
-if [ -z "$path" ]; then
-    output_path=".."
-    path="."
-else
-    output_path="."
-    if [ ! -d "$path" ]; then
-        echo "The input '$path' is not valid. Please enter a valid folder name."
-        exit 1
-    fi
-fi
-
-zip -r "$output_path/$output_filename" "$path/*"
-rm "$path/*"
+echo "$output_filename"
+zip -r "$output_filename" "$folder_name"/*
+rm "$folder_name/*"
 
 clear
 echo "Zip completed at $(date "+%H:%M:%S")"
