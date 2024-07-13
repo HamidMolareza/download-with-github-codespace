@@ -13,3 +13,5 @@ alias bash-reload='source ~/.bashrc'
 
 alias pwdc='pwd | clipboard'
 alias pwdce='pwd | clipboard && exit'
+
+alias bashrc-reload='source ~/.bashrc'
