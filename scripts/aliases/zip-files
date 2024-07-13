@@ -11,10 +11,12 @@ current_datetime=$(date "+%H%M%S-%Y%m%d")
 output_filename="$current_datetime.zip"
 
 clear
+echo "Size: $(du -sh "$folder_name")"
 
-echo "$output_filename"
 zip -r "$output_filename" "$folder_name"/*
 rm "$folder_name/*"
 
 clear
+
 echo "Zip completed at $(date "+%H:%M:%S")"
+echo "File Size: $(du -sh "$output_filename")"
