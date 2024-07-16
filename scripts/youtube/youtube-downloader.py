@@ -23,12 +23,12 @@ class URLModel:
     def __init__(self, url: str, name: Optional[str]):
         if is_none_or_empty(url):
             raise Exception("The url parameter is required.")
-        self.url = url
+        self.url = url.strip()
         
         if is_none_or_empty(name):
             self.name = None
         else:
-            self.name = name
+            self.name = name.strip()
 
     def __repr__(self):
         return f"URLModel(url='{self.url}', name='{self.name}')"
