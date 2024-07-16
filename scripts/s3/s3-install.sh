@@ -5,7 +5,7 @@ if command -v aws &> /dev/null; then
     exit 1
 fi
 
-sudo apt update
-sudo apt install awscli
+sudo apt update -y
+sudo apt install awscli -y
 
 aws configure
