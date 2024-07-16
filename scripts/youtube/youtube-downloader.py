@@ -8,6 +8,17 @@ from tqdm import tqdm
 import yt_dlp
 
 
+def is_ffmpeg_installed():
+    try:
+        # Attempt to execute `ffmpeg -version`
+        result = subprocess.run(['ffmpeg', '-version'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        # Check if the command was successful
+        return result.returncode == 0
+    except FileNotFoundError:
+        # If ffmpeg is not found, a FileNotFoundError will be raised
+        return False
+
+
 class URLModel:
     def __init__(self, url: str, name: Optional[str]):
         if is_none_or_empty(url):
@@ -102,6 +113,10 @@ def download_videos(file_path):
 
 
 if __name__ == "__main__":
+    if not is_ffmpeg_installed():
+        print("ffmpeg is not installed")
+        return
+    
     file_path = get_argv(sys.argv, 1)
     if not file_path:
         file_path = input("Download links file path: ")
