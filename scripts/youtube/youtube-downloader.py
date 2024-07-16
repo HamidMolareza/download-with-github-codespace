@@ -110,9 +110,9 @@ def download_videos(file_path):
                 ydl.download([url_model.url])
         except yt_dlp.utils.DownloadError as e:
             print(f"An error occurred while downloading {url_model}: {e}")
-
-
-if __name__ == "__main__":
+            
+            
+def main():
     if not is_ffmpeg_installed():
         print("ffmpeg is not installed")
         return
@@ -125,3 +125,7 @@ if __name__ == "__main__":
         download_videos(file_path)
     else:
         print(f"The file {file_path} does not exist.")
+
+
+if __name__ == "__main__":
+    main()
