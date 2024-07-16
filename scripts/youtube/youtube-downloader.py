@@ -79,7 +79,7 @@ def download_videos(file_path):
     # Download each URL using yt-dlp with progress bar
     for url_model in tqdm(url_models, desc="Downloading videos", unit="video"):
         print(f"Downloading {url_model}")
-        output_folder = f"./{url_model.name}"
+        output_folder = f"./videos/{url_model.name}"
         os.makedirs(output_folder, exist_ok=True)  # Ensure the output directory exists
         
         def progress_hook(d):
