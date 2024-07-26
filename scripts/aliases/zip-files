@@ -1,0 +1,26 @@
+#!/bin/bash
+
+# Check if at least one file is provided
+if [ $# -lt 1 ]; then
+    echo "Usage: $0 file1 [file2 ... fileN]"
+    exit 1
+fi
+
+# Create a zip archive with the provided files
+zip archive.zip "$@"
+if [ $? -eq 0 ]; then
+    echo "Files successfully zipped into archive.zip"
+
+    # Remove the original files
+    for file in "$@"; do
+        rm "$file"
+        if [ $? -ne 0 ]; then
+            echo "Failed to remove $file"
+        else
+            echo "$file removed successfully"
+        fi
+    done
+else
+    echo "Failed to create zip archive"
+    exit 1
+fi
