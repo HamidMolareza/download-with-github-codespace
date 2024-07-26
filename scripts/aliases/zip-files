@@ -7,7 +7,8 @@ if [ $# -lt 1 ]; then
 fi
 
 # Create a zip archive with the provided files
-zip archive.zip "$@"
+current_datetime=$(date "+%H%M%S-%Y%m%d")
+zip "$current_datetime.zip" "$@"
 if [ $? -eq 0 ]; then
     echo "Files successfully zipped into archive.zip"
 
