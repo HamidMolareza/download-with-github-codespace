@@ -1,15 +1,19 @@
 #!/bin/bash
 set -e
 
-file="$1"
-if [ ! -f "$file" ]; then
-    echo "The input '$file' is not valid. Please enter a valid folder name."
+if [ "$#" -eq 0 ]; then
+    echo "No files provided. Please provide at least one file to upload."
+    exit 1
 fi
 
-clear
+for file in "$@"; do
+    if [ ! -f "$file" ]; then
+        echo "The input '$file' is not valid. Please enter a valid file name."
+        continue
+    fi
 
-s3-upload.sh "$file"
-rm "$file"
+    s3-upload.sh "$file"
+    rm "$file"
 
-clear
-echo "Upload completed at $(date "+%H:%M:%S")"
+    echo "Upload of '$file' completed at $(date "+%H:%M:%S")"
+done
