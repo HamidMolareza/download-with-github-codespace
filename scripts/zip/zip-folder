@@ -1,23 +1,29 @@
 #!/bin/bash
 set -e
 
-folder_path="$1"
-if [ ! -d "$folder_path" ]; then
-    echo "PLease enter a valid folder name."
+if [ "$#" -lt 1 ]; then
+    echo "Please provide at least one folder path."
     exit 1
 fi
 
-current_datetime=$(date "+%H%M%S-%Y%m%d")
-folder_name="$(basename "$folder_path")"
-output_filename="$folder_name-$current_datetime.zip"
+for folder_path in "$@"; do
+    if [ ! -d "$folder_path" ]; then
+        echo "Invalid folder path: $folder_path"
+        continue
+    fi
 
-clear
-echo "Size: $(du -sh "$folder_path")"
+    current_datetime=$(date "+%H%M%S-%Y%m%d")
+    folder_name="$(basename "$folder_path")"
+    output_filename="$folder_name-$current_datetime.zip"
 
-zip -r "$output_filename" "$folder_path"/*
-find "$folder_path" -not -name "$folder_name" -not -name 'list.txt' -not -name '.' -exec rm -rf {} +
+    echo "Processing folder: $folder_path"
+    echo "Size: $(du -sh "$folder_path")"
 
-clear
+    zip -r "$output_filename" "$folder_path"
+    
+    # Cleaning up the folder, assuming 'list.txt' should not be deleted
+    find "$folder_path" -not -name "$(basename "$folder_path")" -not -name 'list.txt' -not -name '.' -exec rm -rf {} +
 
-echo "Zip completed at $(date "+%H:%M:%S")"
-echo "File Size: $(du -sh "$output_filename")"
+    echo "Zip completed for $folder_path at $(date "+%H:%M:%S")"
+    echo "File Size: $(du -sh "$output_filename")"
+done
