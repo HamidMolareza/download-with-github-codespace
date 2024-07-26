@@ -1,3 +1,8 @@
 #!/bin/bash
 
-find "$1" -type f -exec du -b {} + | sort -rn | head -n 5
+path="$1"
+if [ -z "$path" ];
+    path="."
+fi
+
+find "$path" -type f -exec du -h {} + | sort -rh | head -n 5
