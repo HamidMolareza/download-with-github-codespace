@@ -84,7 +84,7 @@ def download_videos(file_path):
         except subprocess.CalledProcessError as e:
             print(f"An error occurred while downloading {url_models}: {e}")
             
-def download_videos(file_path):
+def download_videos(file_path: str, cookies_path: str):
     url_models = parse_file_to_url_model(file_path)
 
     # Download each URL using yt-dlp with progress bar
@@ -102,7 +102,8 @@ def download_videos(file_path):
         ydl_opts = {
             'format': 'bv+ba/b',
             'outtmpl': f'{output_folder}/%(title)s.%(ext)s',
-            'progress_hooks': [progress_hook]
+            'progress_hooks': [progress_hook],
+            'cookiefile': cookies_path
         }
         
         try:
@@ -120,11 +121,17 @@ def main():
     file_path = get_argv(sys.argv, 1)
     if not file_path:
         file_path = input("Download links file path: ")
-
-    if os.path.exists(file_path):
-        download_videos(file_path)
-    else:
+        
+    cookies_path = get_argv(sys.argv, 2)
+    if not cookies_path:
+        cookies_path = input("Cookies file path: ")
+        
+    if not os.path.exists(file_path):
         print(f"The file {file_path} does not exist.")
+    if not os.path.exists(cookies_path):
+        print(f"The file {cookies_path} does not exist.")
+
+    download_videos(file_path, cookies_path)
 
 
 if __name__ == "__main__":
