@@ -1,0 +1,37 @@
+#!/bin/python3
+
+import argparse
+import requests
+
+# Update these
+PERSONAL_BOT_TOKEN = 'TOKEN'
+ADMIN_BALE_ID = 1111111111
+
+
+def send_notif(message: str):
+    url = f"https://tapi.bale.ai/bot{PERSONAL_BOT_TOKEN}/sendMessage"
+
+    data = {
+        "chat_id": ADMIN_BALE_ID,
+        "text": message
+    }
+
+    res = requests.post(url, data=data)
+    print(res)
+
+
+def main():
+    # Create the parser
+    parser = argparse.ArgumentParser(description='Send a notification to bale bot.')
+
+    # Add the arguments
+    parser.add_argument('-m', '--message', type=str, required=True, help='The message to send as a notification')
+
+    # Parse the arguments
+    args = parser.parse_args()
+
+    # Call the function to send the notification
+    send_notif(args.message)
+
+
+main()
