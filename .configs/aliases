@@ -14,3 +14,7 @@ alias pwdc='pwd | clipboard'
 alias pwdce='pwd | clipboard && exit'
 
 alias bashrc-reload='source ~/.bashrc'
+
+alias size='du -sh *'
+alias size-all='du -sh .'
+
