@@ -1,0 +1,54 @@
+#!/bin/bash
+
+# Exit immediately if any command fails
+set -e
+
+path=$1
+if [ -z "$path" ]; then
+    path="."
+fi
+
+maximum_count=$2
+if [ -z "$maximum_count" ]; then
+    maximum_count=3
+fi
+
+# Check if the provided path is valid
+if [ ! -d "$path" ]; then
+  echo "Error: $path is not a valid directory."
+  exit 1
+fi
+
+# Get the largest files in the directory
+largest_files=$(find "$path" -type f -exec du -b {} + | sort -rh | head -n $maximum_count | cut -f2-)
+
+# Initialize an empty string to store file paths for zipping
+files_to_zip=""
+
+# Loop through each file and wrap it in quotes
+while IFS= read -r file; do
+  files_to_zip+="\"$file\" "
+done <<< "$largest_files"
+
+# Get the current date and time in the format YYYYMMDD_HHMMSS
+current_date=$(date +"%Y%m%d_%H%M%S")
+# Create a zip file with the current date and time in the filename
+output_file="largest_files_$current_date.zip"
+
+# Zip the files
+eval zip -r "$output_file" $files_to_zip
+
+# Check if zip operation was successful
+if [ $? -eq 0 ]; then
+  echo "Zip operation successful. Removing original files..."
+  # Remove the original files
+  while IFS= read -r file; do
+    rm -f "$file"
+  done <<< "$largest_files"
+  echo "Files removed."
+else
+  echo "Zip operation failed."
+  exit 1
+fi
+
+echo "The $maximum_count largest files have been zipped into $output_file"
