@@ -1,0 +1,12 @@
+#!/bin/bash
+
+DOMAIN="storage.c2.liara.space"
+BUCKET_NAME="bucker"
+
+# Get the list of object keys in the bucket
+FILES=$(aws --endpoint-url "https://$DOMAIN" s3api list-objects --bucket "$BUCKET_NAME" --query "Contents[].Key" --output json)
+
+# Extract the file keys from JSON and format them as URLs
+echo "$FILES" | jq -r '.[]' | while read -r file_key; do
+    echo "https://$BUCKET_NAME.$DOMAIN/$file_key"
+done
