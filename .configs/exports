@@ -4,7 +4,6 @@
 export S3_DOMAIN=""
 export S3_BUCKET_NAME=""
 export S3_BUCKET_PATH=""
-export S3_ACCESS_KEY=""
 
 export BALE_BOT_TOKEN=""
 export BALE_BOT_ADMIN_ID=""

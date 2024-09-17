@@ -2,9 +2,11 @@
 
 export GITHUB_DIR="$PWD"
 
+printf "\n\n" >> ~/.bashrc
+echo "export GITHUB_DIR=\"$PWD\"" >> ~/.bashrc
+
 echo "source $GITHUB_DIR/.configs/colorful_messages" >> ~/.bashrc
 
-printf "\n\n" >> ~/.bashrc
 echo ". $GITHUB_DIR/.configs/aliases" >> ~/.bashrc
 echo ". $GITHUB_DIR/.configs/exports" >> ~/.bashrc
 
