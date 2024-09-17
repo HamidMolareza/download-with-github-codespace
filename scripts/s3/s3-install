@@ -1,0 +1,10 @@
+#!/bin/bash
+
+if ! command -v aws &> /dev/null; then
+  sudo apt update -y
+  sudo apt install awscli -y
+else
+  echo "The aws command is already installed."
+fi
+
+aws configure
