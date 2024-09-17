@@ -1,0 +1,19 @@
+#!/bin/bash
+
+# Exit on error
+set -e
+
+for input in "$@"; do
+    if [[ "$input" == "-h" || "$input" == "--help" || "$input" == "h" || "$input" == "help" ]]; then
+      biggest-files -h
+      exit
+    fi
+done
+
+biggest_files=$(biggest-files --only-names $*)
+
+# Zip files
+echo "$biggest_files" | xargs -I {} zip -r "$(date +%Y%m%d-%H%M%S)" "{}"
+
+# Remove files
+echo "$biggest_files" | xargs -I {} rm -f "{}"
