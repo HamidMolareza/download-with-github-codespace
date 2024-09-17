@@ -1,0 +1,15 @@
+#!/bin/bash
+
+export GITHUB_DIR="$PWD"
+
+echo "source $GITHUB_DIR/.configs/colorful_messages" >> ~/.bashrc
+
+printf "\n\n" >> ~/.bashrc
+echo ". $GITHUB_DIR/.configs/aliases" >> ~/.bashrc
+echo ". $GITHUB_DIR/.configs/exports" >> ~/.bashrc
+
+chmod -R +x scripts
+
+source ~/.bashrc
+
+info "Run \`startup\` script to install requirements, update system, etc."

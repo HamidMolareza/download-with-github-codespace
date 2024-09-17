@@ -1,0 +1,16 @@
+#!/bin/bash
+
+# Variables
+export S3_DOMAIN=""
+export S3_BUCKET_NAME=""
+export S3_BUCKET_PATH=""
+export S3_ACCESS_KEY=""
+
+export BALE_BOT_TOKEN=""
+export BALE_BOT_ADMIN_ID=""
+
+
+# Script folders
+export PATH=$PATH:$GITHUB_DIR/scripts
+export PATH=$PATH:$GITHUB_DIR/scripts/s3
+export PATH=$PATH:$GITHUB_DIR/scripts/zip
