@@ -1,0 +1,176 @@
+#!/bin/bash
+
+trap 'exit 7' EXIT SIGINT SIGTERM
+
+# =============== Default values ===============
+max_retries=5
+retry_delay=4
+output_dir=""
+
+# ==================== Functions ====================
+# Function to download a file with retries
+download_with_retry() {
+    local url="$1"
+    local output_dir="${2:-.}"
+    local max_retries="${3:-5}"   # Default to 5 retries
+    local retry_delay="${4:-4}"   # Default to 4 seconds delay
+    local cookies_path="$5"
+    local attempt=1
+    local is_youtube=false; [[ "$url" =~ youtube.com ]] && is_youtube=true
+
+    while (( attempt <= max_retries )); do
+        echo "Attempt $attempt to download $url to $output_dir"
+        
+        if [[ "$is_youtube" = true ]]; then
+          if [ ! -f "$cookies_path" ]; then
+            echo "Error! Cookie file for downloading youtube is required."
+            return 1
+          fi
+          yt-dlp --format 'bv+ba/b' \
+                 --output "$output_dir/%(title)s.%(ext)s" \
+                 --cookies "$cookies_path" \
+                 --no-abort-on-error \
+                 --retries "$max_retries" \
+                 --progress \
+                 "$url"
+          if [ "$?" -eq 0 ]; then
+            return 0
+          fi
+        else
+          if aria2c --log-level error --console-log-level error "$url" -d "$output_dir"; then
+              return 0
+          else
+            case $? in
+            # 1) Failed to connect
+            # 7)  exit 7;; # Ctrl + C
+            3)  return 3;; # 404-NotFound
+            24) return 24;; # 401-UnAuthorize
+            esac
+          fi
+        fi
+
+        echo "Download failed. Retrying in $retry_delay seconds..."
+        ((attempt++))
+        sleep "$retry_delay"
+    done
+
+    return 1
+}
+
+# Function to display help message
+show_help() {
+    echo "Usage: $(basename "$0") [options] <filename>"
+    echo
+    echo "Options:"
+    echo "  -m, --max-retry <num>    Specify the maximum number of retries for failed downloads."
+    echo "  -d, --retry-delay <sec>  Specify the delay in seconds between retries."
+    echo "  -o, --output-dir <path>  Specify the directory to save files."
+    echo "  -c, --cookie <path>      Specify cookies file path"
+    echo "  -h                       Display this help message."
+    echo
+    echo "Arguments:"
+    echo "  filename                 A file containing URLs (one per line), optionally followed by a custom folder name."
+    echo
+    echo "Each line of the file can be in the following format:"
+    echo "  <URL> [custom_folder_name]"
+    echo
+    exit 0
+}
+
+is_command_exist(){
+  command -v "$1" >/dev/null 2>&1
+  return $?
+}
+
+# ==================== Main ====================
+if ! is_command_exist aria2c; then
+    echo "Error: aria2c is not installed. Please install it before running this script."
+    exit 1
+fi
+if ! is_command_exist yt-dlp; then
+    echo "Error: yt-dlp is not installed. Please install it before running this script."
+    exit 1
+fi
+if ! is_command_exist ffmpeg; then
+    echo "Error: ffmpeg is not installed. Please install it before running this script."
+    exit 1
+fi
+
+while [[ "$#" -gt 1 ]]; do
+    case "$1" in
+        -m | --max-retry) max_retries="$2"; shift 2;;
+        -d | --retry-delay) retry_delay="$2"; shift 2;;
+        -o | --output-dir) output_dir="$2"; shift 2;;
+        -c | --cookie) cookies_path="$2"; shift 2;;
+        -h) show_help;;
+    esac
+done
+
+# Check if filename is provided
+if [ "$#" -ne 1 ]; then
+    show_help
+    exit 1
+fi
+
+# Get the filename from the command-line argument
+filename="$1"
+file_without_extension="${filename%.*}"
+error_file="$file_without_extension-errors.txt"
+processed_file="$file_without_extension-processed.txt"
+
+# Check if file exists
+if [ ! -f "$filename" ]; then
+    echo "File not valid: $filename"
+    exit 1
+fi
+
+
+if [ -z "$output_dir" ]; then
+  output_dir="$file_without_extension-output-$(date "+%m%Y")"
+fi
+mkdir -p "$output_dir"
+
+# Loop until the file is empty
+while [ -s "$filename" ]; do
+  # Read the first line
+  read -r line < "$filename"
+  
+    # Skip empty lines
+    if [ -z "$line" ]; then
+        continue
+    fi
+
+    # Split the line into URL and custom file name
+    trimmed_line=$(echo "$line" | awk '{$1=$1; print}')
+    url=$(echo "$trimmed_line" | awk '{print $1}')
+    custom_name=$(echo "$trimmed_line" | awk '{$1=""; print substr($0, 2)}')
+
+    # Check if URL is present
+    if [ -z "$url" ]; then
+        echo "Invalid line (missing URL): $line"
+        continue
+    fi
+
+    # Download the URL with the custom file name if provided
+    if [ -z "$custom_name" ]; then
+        download_with_retry "$url" "$output_dir" "$max_retries" "$retry_delay" "$cookies_path"
+    else
+        download_with_retry "$url" "$output_dir/$custom_name" "$max_retries" "$retry_delay" "$cookies_path"
+    fi
+    exit_code="$?"
+    
+    if [[ "$exit_code" -eq 0 ]]; then
+      echo "$url" >> "$processed_file"
+    else
+      message="$url | $exit_code |"
+      case $exit_code in
+      3)  message="$message 404-NotFound";;
+      24) message="$message 401-UnAuthorize";;
+      *) message="$message Other";;
+      esac
+      echo "$message" >> "$error_file"
+    fi
+    
+    # Remove the first line from the file
+    sed -i '1d' "$filename"
+done

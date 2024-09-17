@@ -1,4 +1,0 @@
-
-http://example.com/file1.zip file-name1.zip
-http://example.com/file2.zip file-main.zip
-http://example.com/file3.zip
