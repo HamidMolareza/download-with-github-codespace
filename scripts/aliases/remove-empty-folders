@@ -1,8 +1,0 @@
-#!/bin/bash
-
-path="$1"
-if [ -z "$path" ]; then
-    path="."
-fi
-
-find "$path" -type d -exec du -sk {} \; | awk '$1 < 5 {print $2}' | xargs rm -rf
