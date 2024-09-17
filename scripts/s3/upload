@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# =============== Default values ===============
+domain="$S3_DOMAIN"
+bucket_name="$S3_BUCKET_NAME"
+bucket_path="$S3_BUCKET_PATH"
+
+if [[ "$#" -eq 0 ]]; then
+  echo "Usage: $(basename "$0") <file> <folder>"
+  exit 1
+fi
+
+s3-upload --domain" $domain" --bucket-name "$bucket_name" --bucket-path "$bucket_path" --clean "$@"
