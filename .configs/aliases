@@ -1,6 +1,6 @@
 #!/bin/bash
 
-alias ll="ls -alFh"
+alias ll="ls -la"
 alias c="clear"
 alias ..='cd ..'
 alias ....='cd ../..'
@@ -17,4 +17,3 @@ alias bashrc-reload='source ~/.bashrc'
 
 alias size='du -sh *'
 alias size-all='du -sh .'
-
