@@ -3,16 +3,12 @@
 import argparse
 import requests
 
-# Update these
-PERSONAL_BOT_TOKEN = 'TOKEN'
-ADMIN_BALE_ID = 1111111111
 
-
-def send_notif(message: str):
-    url = f"https://tapi.bale.ai/bot{PERSONAL_BOT_TOKEN}/sendMessage"
+def send_notif(message: str, token: str, admin_id: int):
+    url = f"https://tapi.bale.ai/bot{token}/sendMessage"
 
     data = {
-        "chat_id": ADMIN_BALE_ID,
+        "chat_id": admin_id,
         "text": message
     }
 
@@ -26,12 +22,14 @@ def main():
 
     # Add the arguments
     parser.add_argument('-m', '--message', type=str, required=True, help='The message to send as a notification')
+    parser.add_argument('-t', '--token', type=str, required=True, help='The Bale bot token')
+    parser.add_argument('-i', '--admin-id', type=int, required=True, help='Admin id')
 
     # Parse the arguments
     args = parser.parse_args()
 
     # Call the function to send the notification
-    send_notif(args.message)
+    send_notif(args.message, args.token, args.admin_id)
 
 
 main()
