@@ -1,0 +1,40 @@
+#!/bin/bash
+
+# Function to display help message
+show_help() {
+    echo "Usage: $(basename "$0") [options] [text]"
+    echo
+    echo "This script copies input text to the clipboard or prints the clipboard content."
+    echo
+    echo "Options:"
+    echo "  -h, --help         Show this help message"
+    echo
+    echo "If no arguments are provided, the current clipboard value will be printed."
+    echo "If input is provided either via command-line arguments or through a pipe, it will be copied to the clipboard."
+}
+
+# Check if 'xclip' is installed, and exit if not
+if ! command -v xclip &> /dev/null; then
+    echo "Error: 'xclip' is not installed."
+    exit 1
+fi
+
+# Handle help option
+if [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
+    show_help
+    exit 0
+fi
+
+# Capture input from stdin if available, otherwise use command-line arguments
+if [ -p /dev/stdin ]; then
+    input=$(cat)  # Input from a pipe
+elif [ "$#" -eq 0 ]; then
+    # If no arguments are passed, print the current clipboard value
+    xclip -selection clipboard -o
+    exit 0
+else
+    input="$*"  # Input from command-line arguments
+fi
+
+# Copy the input to the clipboard
+echo "$input" | xclip -r -selection clipboard
