@@ -4,19 +4,22 @@ import os
 import shutil
 import argparse
 
+
 def get_size(start_path):
     total_size = 0
-    for dirpath, dirnames, filenames in os.walk(start_path):
-        for f in filenames:
-            fp = os.path.join(dirpath, f)
+    for dir_path, _, file_names in os.walk(start_path):
+        for f in file_names:
+            fp = os.path.join(dir_path, f)
             total_size += os.path.getsize(fp)
     return total_size
+
 
 def create_subfolder(base_path, index):
     subfolder_name = f"subfolder_{index}"
     subfolder_path = os.path.join(base_path, subfolder_name)
     os.makedirs(subfolder_path, exist_ok=True)
     return subfolder_path
+
 
 def main():
     parser = argparse.ArgumentParser(description="Separate folder into subfolders with a maximum size of 5GB each.")
@@ -33,9 +36,9 @@ def main():
     folder_index = 1
     subfolder_path = create_subfolder(folder_path, folder_index)
 
-    for root, dirs, files in os.walk(folder_path):
+    for root, _, files in os.walk(folder_path):
         for file in files:
-            file_path = os.path.join(root, file)
+            file_path = str(os.path.join(root, file))
             file_size = os.path.getsize(file_path)
 
             if current_size + file_size > max_size:
@@ -45,6 +48,7 @@ def main():
 
             shutil.move(file_path, subfolder_path)
             current_size += file_size
+
 
 if __name__ == "__main__":
     main()
