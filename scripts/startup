@@ -1,0 +1,14 @@
+#!/bin/bash
+
+nano "$GITHUB_DIR/exports"
+source ~/.bashrc # reload exports
+
+update
+
+sudo apt install -y python3-pip
+pip install -r "$GITHUB_DIR/.configs/pip-requirements.txt"
+
+install-yt-dlp
+sudo apt install -y ffmpeg
+
+s3-install
