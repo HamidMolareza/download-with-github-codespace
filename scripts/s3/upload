@@ -6,4 +6,4 @@ if [[ "$#" -eq 0 ]]; then
   exit 1
 fi
 
-s3-upload --domain "$S3_DOMAIN" --bucket-name "$S3_BUCKET_NAME" --bucket-path "$S3_BUCKET_PATH" --clean "$@"
+s3-upload --clean "$@"

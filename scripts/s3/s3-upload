@@ -6,6 +6,9 @@ if ! command -v aws &>/dev/null; then
 fi
 
 # =============== Default values ===============
+domain="$S3_DOMAIN"
+bucket_name="$S3_BUCKET_NAME"
+bucket_path="$S3_BUCKET_PATH"
 remove_after_upload=false
 exit_on_error=false
 

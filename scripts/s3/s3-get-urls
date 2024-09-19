@@ -5,6 +5,10 @@ if ! command -v aws &>/dev/null; then
     exit 1
 fi
 
+# =============== Default values ===============
+domain="$S3_DOMAIN"
+bucket_name="$S3_BUCKET_NAME"
+
 # =============== Functions ===============
 show_help() {
     echo "Usage: $(basename "$0") [options]"
