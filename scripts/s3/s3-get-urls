@@ -19,6 +19,15 @@ show_help() {
     exit 1
 }
 
+get_domain() {
+  local url=$1
+
+  # Remove protocol (http, https, etc.) and 'www.' if present, then extract domain
+  domain=$(echo "$url" | sed -E 's~(http(s)?://)?(www\.)?~~' | awk -F/ '{print $1}')
+  echo "$domain"
+}
+
+
 # =============== Main ===============
 # Parse arguments
 while [[ "$#" -gt 0 ]]; do
@@ -35,13 +44,10 @@ if [[ -z "$domain" || -z "$bucket_name" ]]; then
     show_help
 fi
 
-# Check if domain starts with http or https, if not prepend https://
-if [[ ! "$domain" =~ ^http ]]; then
-    domain="https://$domain"
-fi
+domain=$(get_domain "$domain")
 
 # Get the list of object keys in the bucket
-FILES=$(aws --endpoint-url "$domain" s3api list-objects --bucket "$bucket_name" --query "Contents[].Key" --output json)
+FILES=$(aws --endpoint-url "https://$domain" s3api list-objects --bucket "$bucket_name" --query "Contents[].Key" --output json)
 
 # Extract the file keys from JSON and format them as URLs
 echo "$FILES" | jq -r '.[]' | while read -r file_key; do
