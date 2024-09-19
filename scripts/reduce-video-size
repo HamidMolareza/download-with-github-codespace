@@ -1,0 +1,32 @@
+#!/bin/bash
+
+# Check if the input file is provided
+if [ $# -ne 1 ]; then
+  echo "Usage: $(basename "$0") input_video_file"
+  exit 1
+fi
+
+# Get the input file from the command-line argument
+input_file="$1"
+
+# Get the current date and time
+datetime=$(date +"%Y%m%d_%H%M%S")
+
+# Define the output file name with date and time
+output_file="${input_file%.*}_smaller_${datetime}.mp4"
+
+# Define desired settings for reducing size
+resolution="640:360"  # Target resolution (you can adjust this)
+bitrate="800k"        # Target video bitrate (you can adjust this)
+audio_bitrate="96k"   # Target audio bitrate (you can adjust this)
+crf_value="28"        # Compression level (lower is better quality, higher is worse)
+
+# Run ffmpeg to decrease video size
+ffmpeg -i "$input_file" -vf "scale=$resolution" -b:v $bitrate -b:a $audio_bitrate -vcodec libx264 -crf $crf_value "$output_file"
+
+# Check if the output file was created successfully
+if [ $? -eq 0 ]; then
+  echo "Video size reduced successfully. Output file: $output_file"
+else
+  echo "Error reducing video size."
+fi
