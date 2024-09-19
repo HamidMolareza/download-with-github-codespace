@@ -24,7 +24,7 @@ download_with_retry() {
         if [[ "$is_youtube" = true ]]; then
           if [ ! -f "$cookies_path" ]; then
             echo "Error! Cookie file for downloading youtube is required."
-            return 1
+            return 100
           fi
           yt-dlp --format 'bv+ba/b' \
                  --output "$output_dir/%(title)s.%(ext)s" \
@@ -33,14 +33,16 @@ download_with_retry() {
                  --retries "$max_retries" \
                  --progress \
                  "$url"
-          if [ "$?" -eq 0 ]; then
+          error_code="$?"
+          if [ "$error_code" -eq 0 ]; then
             return 0
           fi
         else
           if aria2c --log-level error --console-log-level error "$url" -d "$output_dir"; then
               return 0
           else
-            case $? in
+            error_code="$?"
+            case $error_code in
             # 1) Failed to connect
             # 7)  exit 7;; # Ctrl + C
             3)  return 3;; # 404-NotFound
@@ -49,12 +51,16 @@ download_with_retry() {
           fi
         fi
 
-        echo "Download failed. Retrying in $retry_delay seconds..."
+        echo "Download failed ($error_code). Retrying in $retry_delay seconds..."
         ((attempt++))
         sleep "$retry_delay"
     done
 
-    return 1
+    if [ -z "$error_code" ]; then
+      return 200
+    else
+      return "$error_code"
+    fi
 }
 
 # Function to display help message
@@ -167,6 +173,7 @@ while [ -s "$filename" ]; do
       case $exit_code in
       3)  message="$message 404-NotFound";;
       24) message="$message 401-UnAuthorize";;
+      100) message="$message Cookie-Is-Required-For-Youtube";;
       *) message="$message Other";;
       esac
       echo "$message" >> "$error_file"
