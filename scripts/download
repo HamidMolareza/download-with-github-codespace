@@ -65,14 +65,15 @@ download_with_retry() {
 
 # Function to display help message
 show_help() {
-    echo "Usage: $(basename "$0") [options] <filename>"
+    echo "Usage: $(basename "$0") [options] -f <file>"
     echo
     echo "Options:"
     echo "  -m, --max-retry <num>    Specify the maximum number of retries for failed downloads."
     echo "  -d, --retry-delay <sec>  Specify the delay in seconds between retries."
     echo "  -o, --output-dir <path>  Specify the directory to save files."
     echo "  -c, --cookie <path>      Specify cookies file path"
-    echo "  -h                       Display this help message."
+    echo "  -f, --file <path>        Specify download file path"
+    echo "  -h, --help               Display this help message."
     echo
     echo "Arguments:"
     echo "  filename                 A file containing URLs (one per line), optionally followed by a custom folder name."
@@ -102,24 +103,22 @@ if ! is_command_exist ffmpeg; then
     exit 1
 fi
 
-while [[ "$#" -gt 1 ]]; do
+while [[ "$#" -gt 0 ]]; do
     case "$1" in
         -m | --max-retry) max_retries="$2"; shift 2;;
         -d | --retry-delay) retry_delay="$2"; shift 2;;
         -o | --output-dir) output_dir="$2"; shift 2;;
         -c | --cookie) cookies_path="$2"; shift 2;;
-        -h) show_help;;
+        -f | --file) filename="$2"; shift 2;;
+        -h | --help) show_help;;
     esac
 done
 
 # Check if filename is provided
-if [ "$#" -ne 1 ]; then
+if [ -z "$filename" ]; then
+    echo "File name is required."
     show_help
-    exit 1
 fi
-
-# Get the filename from the command-line argument
-filename="$1"
 file_without_extension="${filename%.*}"
 error_file="$file_without_extension-errors.txt"
 processed_file="$file_without_extension-processed.txt"
