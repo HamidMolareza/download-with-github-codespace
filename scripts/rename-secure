@@ -1,0 +1,29 @@
+#!/bin/bash
+
+# Check if a directory path is provided
+if [ -z "$1" ]; then
+  echo "Usage: $0 <directory-path>"
+  exit 1
+fi
+
+DIR_PATH="$1"
+
+# Find all files in the specified directory
+find "$DIR_PATH" -type f | while read FILE; do
+  # Get the directory, file name, and extension
+  DIR=$(dirname "$FILE")
+  BASENAME=$(basename "$FILE")
+  EXT="${BASENAME##*.}"
+  FILENAME="${BASENAME%.*}"
+
+  # Generate a random string of 8 characters
+  RANDOM_STR=$(openssl rand -hex 4)
+
+  # Construct the new file name
+  NEW_FILENAME="${FILENAME}_${RANDOM_STR}.${EXT}"
+
+  # Rename the file
+  mv "$FILE" "$DIR/$NEW_FILENAME"
+
+  echo "Renamed: $FILE -> $DIR/$NEW_FILENAME"
+done
