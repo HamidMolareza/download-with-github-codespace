@@ -1,0 +1,40 @@
+#!/bin/bash
+
+# Function to display help
+show_help() {
+    echo "Usage: $(basename "$0") <message> <minimum-idle-time-in-millisecons>"
+    exit 0
+}
+
+if ! command-exists xprintidle; then
+    sudo apt-get install xprintidle
+fi
+
+message="$1"
+if [ -z "$message" ]; then
+    show_help
+fi
+
+minimum_idle_time=${2:-0}  # Set to $2 if provided, otherwise default to 0
+
+idle_time_ms=$(xprintidle)
+if [ "$idle_time_ms" -lt "$minimum_idle_time" ]; then
+    exit 0
+fi
+
+url="https://tapi.bale.ai/bot$BALE_PERSONAL_TOKEN"
+
+result=$(
+    curl -s -X POST "$url/sendMessage" \
+        -d chat_id="$BALE_MY_ID" \
+        -d text="$message"
+  )
+status=$(echo "$result" | jq '.ok')
+
+if [[ "$status" = "true" ]]; then
+    echo "$status"
+    exit 0
+else
+    echo "$result" | jq
+    exit 1
+fi

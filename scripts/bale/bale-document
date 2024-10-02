@@ -1,0 +1,32 @@
+#!/bin/bash
+
+# Function to display help
+show_help() {
+    echo "Usage: $(basename "$0") <document file> <caption>"
+    exit 0
+}
+
+document_path="$1"
+if [ ! -f "$document_path" ]; then
+    show_help
+fi
+
+caption="$2"
+
+url="https://tapi.bale.ai/bot$BALE_PERSONAL_TOKEN"
+
+result=$(
+    curl -s -X POST "$url/sendDocument" \
+        -F chat_id="$BALE_MY_ID" \
+        -F document=@"$document_path" \
+        -F caption="$caption" \
+  )
+status=$(echo "$result" | jq '.ok')
+
+if [[ "$status" = "true" ]]; then
+    echo "$status"
+    exit 0
+else
+    echo "$result" | jq
+    exit 1
+fi
