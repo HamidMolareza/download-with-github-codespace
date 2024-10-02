@@ -13,3 +13,4 @@ export BALE_BOT_ADMIN_ID=""
 export PATH=$PATH:$GITHUB_DIR/scripts
 export PATH=$PATH:$GITHUB_DIR/scripts/s3
 export PATH=$PATH:$GITHUB_DIR/scripts/zip
+export PATH=$PATH:$GITHUB_DIR/scripts/bale
