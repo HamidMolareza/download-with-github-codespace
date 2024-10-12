@@ -77,7 +77,8 @@ if [ "$exit_on_error" = true ]; then
   set -e
 fi
 
-for item in "$@"; do
+for input in "$@"; do
+  find . -name "$input" | while read item; do
     echo "Uploading $item..."
     if [ -f "$item" ]; then
       upload_file "$domain" "$bucket_name" "$bucket_path" "$item"
@@ -95,4 +96,5 @@ for item in "$@"; do
       
       printf "Done.\n\n"
     fi
+  done
 done
