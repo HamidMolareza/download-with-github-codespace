@@ -1,0 +1,36 @@
+#!/bin/bash
+
+# Check if correct number of arguments is provided
+if [ "$#" -ne 3 ]; then
+    echo "Usage: $(basename "$0") <path> <old_str> <new_str>"
+    exit 1
+fi
+
+# Assigning the input parameters to variables
+path=$1
+old_str=$2
+new_str=$3
+
+# Check if the provided path exists
+if [ ! -d "$path" ]; then
+    echo "Error: The path '$path' does not exist."
+    exit 1
+fi
+
+# Find and rename files and directories that contain old_str in the name
+find "$path" -depth -name "*$old_str*" | while IFS= read -r item; do
+    # Get the directory and the base name of the current file/folder
+    dir=$(dirname "$item")
+    base=$(basename "$item")
+    
+    # Replace old_str with new_str in the base name
+    new_base="${base//$old_str/$new_str}"
+
+    # Form the new full path
+    new_item="$dir/$new_base"
+
+    # Rename the file/folder
+    mv "$item" "$new_item"
+    
+    echo "Renamed: '$item' -> '$new_item'"
+done
