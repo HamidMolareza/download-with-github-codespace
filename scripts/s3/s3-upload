@@ -38,7 +38,7 @@ upload_file(){
   local bucket_path="$3"
   local file_path="$4"
   
-  aws --endpoint-url "$endpoint_url" s3 cp "$file_path" "s3://$bucket_name/$bucket_path/"
+  aws --endpoint-url "$endpoint_url" s3 cp "$file_path" "s3://$bucket_name/$bucket_path/" --acl public-read
 }
 
 upload_folder(){
@@ -47,7 +47,7 @@ upload_folder(){
   local bucket_path="$3"
   local folder_path="$4"
   
-  aws --endpoint-url "$endpoint_url" s3 cp --recursive "$folder_path" "s3://$bucket_name/$bucket_path/"
+  aws --endpoint-url "$endpoint_url" s3 cp --recursive "$folder_path" "s3://$bucket_name/$bucket_path/" --acl public-read
 }
 
 # =============== Main ===============
