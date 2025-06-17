@@ -1,0 +1,29 @@
+#!/bin/bash
+
+set -e
+
+# Constants
+REPO_URL="https://github.com/rofl0r/microsocks.git"
+CLONE_DIR="microsocks"
+PORT=8082
+
+echo "Updating package list..."
+sudo apt update
+
+echo "Installing dependencies..."
+sudo apt install -y build-essential git
+
+echo "Cloning microsocks..."
+git clone "$REPO_URL"
+cd "$CLONE_DIR"
+
+echo "Building microsocks..."
+make
+
+echo "Copying binary to /usr/local/bin..."
+sudo cp microsocks /usr/local/bin/
+
+echo "Starting microsocks on port $PORT..."
+microsocks -p "$PORT" &
+
+echo "Done. SOCKS5 proxy is now running on port $PORT"
